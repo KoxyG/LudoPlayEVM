@@ -1,14 +1,4 @@
-# Sample Hardhat Project
-
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a Hardhat Ignition module that deploys that contract.
-
-Try running some of the following tasks:
-
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat ignition deploy ./ignition/modules/Lock.ts
-```
 # LudoPlayEVM
+
+- LudoGameModule#LudoGame - 0x63518454A4a933452bd5F13676b6b94860bcC62B
+- https://sepolia-blockscout.lisk.com/address/0x63518454A4a933452bd5F13676b6b94860bcC62B#code
