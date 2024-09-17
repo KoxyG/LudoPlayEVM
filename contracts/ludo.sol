@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 contract LudoGame {
-    uint256 private nonce = 0;
+    uint256 private nonce;
     uint256 private constant BOARD_SIZE = 52;
     uint256 private constant DICE_SIDES = 6;
     uint256 private constant PLAYERS_MAX = 4;
@@ -20,6 +20,9 @@ contract LudoGame {
 
     // events
     event PlayerJoined(address player, uint256 startingPosition);
+    event DiceRolled(address player, uint256 roll);
+
+
 
     function joinGame() external {
         require(playerAddresses.length < PLAYERS_MAX, "Game is full");
@@ -36,13 +39,22 @@ contract LudoGame {
             newPlayer.inHome[i] = true;
         }
         playerAddresses.push(msg.sender);
-        
+
 
         emit PlayerJoined(msg.sender, startingPosition);
     }
 
     function rollDice() public returns (uint256) {
-       
+        require(msg.sender == playerAddresses[currentPlayerIndex], "Not your turn");
+        
+        uint256 roll = generateRandomNumber() % DICE_SIDES + 1;
+        nonce++;
+        
+        emit DiceRolled(msg.sender, roll);
+        
+        currentPlayerIndex = (currentPlayerIndex + 1) % playerAddresses.length;
+        
+        return roll;
     }
 
     function movePiece(uint256 pieceIndex, uint256 steps) external {
