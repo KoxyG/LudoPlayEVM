@@ -82,7 +82,15 @@ contract LudoGame {
 
 
     function movePieceOutOfHome(uint256 pieceIndex) external {
-    
+        require(pieceIndex < PIECES_PER_PLAYER, "Invalid piece index");
+        Player storage player = players[msg.sender];
+        
+        require(player.inHome[pieceIndex], "Piece is not in home");
+        
+        player.inHome[pieceIndex] = false;
+        player.pieces[pieceIndex] = player.startingPosition;
+        
+        emit PieceMoved(msg.sender, pieceIndex, player.startingPosition);
     }
 
     function generateRandomNumber() private view returns (uint256) {
