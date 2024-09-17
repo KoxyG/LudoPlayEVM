@@ -21,6 +21,7 @@ contract LudoGame {
     // events
     event PlayerJoined(address player, uint256 startingPosition);
     event DiceRolled(address player, uint256 roll);
+    event PieceMoved(address player, uint256 pieceIndex, uint256 newPosition);
 
 
 
@@ -51,15 +52,34 @@ contract LudoGame {
         nonce++;
         
         emit DiceRolled(msg.sender, roll);
-        
+
         currentPlayerIndex = (currentPlayerIndex + 1) % playerAddresses.length;
         
         return roll;
     }
 
+
+
     function movePiece(uint256 pieceIndex, uint256 steps) external {
+        require(pieceIndex < PIECES_PER_PLAYER, "Invalid piece index");
+        Player storage player = players[msg.sender];
         
+        require(!player.inHome[pieceIndex], "Piece is in home");
+        
+        uint256 currentPosition = player.pieces[pieceIndex];
+        uint256 newPosition = (currentPosition + steps - player.startingPosition) % BOARD_SIZE + player.startingPosition;
+        
+        // Check if the piece has completed a full circuit
+        if (newPosition < currentPosition) {
+            newPosition = player.startingPosition;
+            player.inHome[pieceIndex] = true;
+        }
+        
+        player.pieces[pieceIndex] = newPosition;
+        
+        emit PieceMoved(msg.sender, pieceIndex, newPosition);
     }
+
 
     function movePieceOutOfHome(uint256 pieceIndex) external {
     
